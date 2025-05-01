@@ -94,14 +94,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   // Logo and welcome text
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(0),
                     child: Icon(
                       Icons.sunny_snowing,
                       size: 98,
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 14),
                   Text(
                     'Welcome Back',
                     style: theme.textTheme.displaySmall?.copyWith(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 import '../services/auth_provider.dart';
@@ -17,8 +16,6 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
   final ApiService _apiService = ApiService();
   late AnimationController _fabAnimationController;
   late Animation<double> _fabAnimation;
-  final Color _primaryColor = Color(0xFF6200EE);
-  final Color _accentColor = Color(0xFF03DAC6);
   
   @override
   void initState() {
@@ -62,283 +59,363 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
     final authProvider = Provider.of<AuthProvider>(context);
     
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          'Users Management',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Logout',
-            onPressed: () async {
-              // Add a nice animation before logout
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => Center(
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(_primaryColor),
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          'Logging out...',
-                          style: GoogleFonts.poppins(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-              
-              // Simulate a short delay for visual feedback
-              await Future.delayed(Duration(milliseconds: 800));
-              
-              Navigator.pop(context); // Close the dialog
-              authProvider.logout();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'All registered users',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
-              ),
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              color: _primaryColor,
-              onRefresh: _refreshUsers,
-              child: FutureBuilder<List<User>>(
-                future: _usersFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(_primaryColor),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header section with app icon and title
+            Container(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: Colors.red[300],
-                            size: 60,
-                          ),
-                          SizedBox(height: 16),
                           Text(
-                            'Error loading users',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                            'Users Management',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            '${snapshot.error}',
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.refresh),
-                            label: Text('Try Again'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _primaryColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed: _refreshUsers,
-                          ),
+                          const SizedBox(height: 8),
                         ],
                       ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_off,
-                            color: Colors.grey[400],
-                            size: 80,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'No users found',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Add a new user with the button below',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return AnimationLimiter(
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          final user = snapshot.data![index];
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: Card(
-                                  margin: EdgeInsets.symmetric(vertical: 8),
-                                  elevation: 2,
-                                  shadowColor: Colors.black26,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(12),
-                                    onTap: () {
-                                      // Show user detail or quick actions
-                                      _showUserOptions(user);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Row(
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: _getAvatarColor(user.username),
-                                            radius: 25,
-                                            child: Text(
-                                              _getInitials(user),
-                                              style: GoogleFonts.poppins(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 16),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  user.username,
-                                                  style: GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                  user.email,
-                                                  style: GoogleFonts.poppins(
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                                if (user.fullName != null && user.fullName!.isNotEmpty)
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 4),
-                                                    child: Text(
-                                                      user.fullName!,
-                                                      style: GoogleFonts.poppins(
-                                                        color: Colors.grey[800],
-                                                        fontSize: 13,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                icon: Icon(Icons.edit, color: const Color.fromARGB(200, 0, 0, 0)),
-                                                splashRadius: 24,
-                                                tooltip: 'Edit User',
-                                                onPressed: () async {
-                                                  final result = await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => UserFormScreen(user: user),
-                                                    ),
-                                                  );
-                                                  if (result == true) {
-                                                    _refreshUsers();
-                                                  }
-                                                },
-                                              ),
-                                              IconButton(
-                                                icon: Icon(Icons.delete, color: const Color.fromARGB(200, 0, 0, 0)),
-                                                splashRadius: 24,
-                                                tooltip: 'Delete User',
-                                                onPressed: () {
-                                                  _showDeleteConfirmation(user);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                      IconButton(
+                        icon: Icon(Icons.logout, color: Colors.black87),
+                        tooltip: 'Logout',
+                        onPressed: () async {
+                          // Add a nice animation before logout
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => Center(
+                              child: Container(
+                                padding: EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'Logging out...',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
                             ),
                           );
+                          
+                          // Simulate a short delay for visual feedback
+                          await Future.delayed(Duration(milliseconds: 800));
+                          
+                          Navigator.pop(context); // Close the dialog
+                          authProvider.logout();
+                          Navigator.pushReplacementNamed(context, '/login');
                         },
                       ),
-                    );
-                  }
-                },
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            
+            // Main content section
+            Expanded(
+              child: RefreshIndicator(
+                color: Colors.black87,
+                onRefresh: _refreshUsers,
+                child: FutureBuilder<List<User>>(
+                  future: _usersFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Container(
+                          padding: EdgeInsets.all(24),
+                          margin: EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                color: Colors.red[300],
+                                size: 60,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Error loading users',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                '${snapshot.error}',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                icon: Icon(Icons.refresh),
+                                label: Text('Try Again'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black87,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 24,
+                                  ),
+                                ),
+                                onPressed: _refreshUsers,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Container(
+                          padding: EdgeInsets.all(24),
+                          margin: EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.person_off,
+                                color: Colors.grey[400],
+                                size: 80,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'No users found',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Add a new user with the button below',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: AnimationLimiter(
+                          child: ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final user = snapshot.data![index];
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: Duration(milliseconds: 375),
+                                child: SlideAnimation(
+                                  verticalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.08),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 5),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(24),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(24),
+                                          onTap: () {
+                                            _showUserOptions(user);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: const Color.fromARGB(250, 0, 0, 0),
+                                                  radius: 28,
+                                                  child: Text(
+                                                    _getInitials(user),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 24,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        user.username,
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 16,
+                                                          color: Colors.black87,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Text(
+                                                        user.email,
+                                                        style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      if (user.fullName != null && user.fullName!.isNotEmpty)
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 4),
+                                                          child: Text(
+                                                            user.fullName!,
+                                                            style: TextStyle(
+                                                              color: Colors.black54,
+                                                              fontSize: 13,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                // Action buttons with new styling
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey.shade100,
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      child: IconButton(
+                                                        icon: Icon(Icons.edit, color: Colors.black87, size: 20),
+                                                        splashRadius: 24,
+                                                        tooltip: 'Edit User',
+                                                        onPressed: () async {
+                                                          final result = await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) => UserFormScreen(user: user),
+                                                            ),
+                                                          );
+                                                          if (result == true) {
+                                                            _refreshUsers();
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey.shade100,
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      child: IconButton(
+                                                        icon: Icon(Icons.delete, color: Colors.black87, size: 20),
+                                                        splashRadius: 24,
+                                                        tooltip: 'Delete User',
+                                                        onPressed: () {
+                                                          _showDeleteConfirmation(user);
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: ScaleTransition(
         scale: _fabAnimation,
@@ -362,15 +439,16 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
               _refreshUsers();
             }
           },
-          backgroundColor: Colors.black,
-          icon: Icon(Icons.person_add, color: Colors.white,),
+          backgroundColor: Colors.black87,
+          icon: Icon(Icons.person_add, color: Colors.white),
           label: Text(
             'Add User',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
           ),
+          elevation: 4,
         ),
       ),
     );
@@ -388,44 +466,28 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
     return user.username.substring(0, 1).toUpperCase();
   }
 
-  Color _getAvatarColor(String username) {
-    final colors = [
-      Colors.blue[600]!,
-      Colors.purple[600]!,
-      Colors.green[600]!,
-      Colors.orange[600]!,
-      Colors.teal[600]!,
-      Colors.pink[600]!,
-      Colors.indigo[600]!,
-      Colors.red[600]!,
-    ];
-    
-    final index = username.codeUnits.reduce((a, b) => a + b) % colors.length;
-    return colors[index];
-  }
-
   void _showUserOptions(User user) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: _getAvatarColor(user.username),
-                  radius: 30,
+                  backgroundColor: Colors.grey.shade100,
+                  radius: 32,
                   child: Text(
                     _getInitials(user),
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Colors.black87,
                       fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                      fontSize: 20,
                     ),
                   ),
                 ),
@@ -436,22 +498,24 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                     children: [
                       Text(
                         user.username,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
+                          color: Colors.black87,
                         ),
                       ),
                       if (user.fullName != null && user.fullName!.isNotEmpty)
                         Text(
                           user.fullName!,
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey[800],
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
                           ),
                         ),
                       Text(
                         user.email,
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey[600],
+                        style: TextStyle(
+                          color: Colors.black54,
                           fontSize: 14,
                         ),
                       ),
@@ -461,9 +525,9 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
               ],
             ),
             SizedBox(height: 24),
-            ListTile(
-              leading: Icon(Icons.edit, color: _primaryColor),
-              title: Text('Edit User', style: GoogleFonts.poppins()),
+            _buildOptionTile(
+              icon: Icons.edit,
+              title: 'Edit User',
               onTap: () async {
                 Navigator.pop(ctx);
                 final result = await Navigator.push(
@@ -477,18 +541,17 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                 }
               },
             ),
-            ListTile(
-              leading: Icon(Icons.delete, color: Colors.black),
-              title: Text('Delete User', style: GoogleFonts.poppins()),
+            _buildOptionTile(
+              icon: Icons.delete,
+              title: 'Delete User',
               onTap: () {
                 Navigator.pop(ctx);
                 _showDeleteConfirmation(user);
               },
             ),
-            // Additional options
-            ListTile(
-              leading: Icon(Icons.info_outline, color: Colors.black),
-              title: Text('User Details', style: GoogleFonts.poppins()),
+            _buildOptionTile(
+              icon: Icons.info_outline,
+              title: 'User Details',
               onTap: () {
                 Navigator.pop(ctx);
                 // Implement detailed view if needed
@@ -500,17 +563,46 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
     );
   }
 
+  Widget _buildOptionTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black87),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+
   void _showDeleteConfirmation(User user) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
         ),
         title: Text(
           'Delete User',
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
         ),
         content: Column(
@@ -524,14 +616,17 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
             SizedBox(height: 16),
             Text(
               'This action cannot be undone.',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
+                color: Colors.black87,
               ),
             ),
             SizedBox(height: 8),
             Text(
               'Are you sure you want to delete ${user.username}?',
-              style: GoogleFonts.poppins(),
+              style: TextStyle(
+                color: Colors.black54,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -543,8 +638,8 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
             },
             child: Text(
               'Cancel',
-              style: GoogleFonts.poppins(
-                color: Colors.grey[800],
+              style: TextStyle(
+                color: Colors.black54,
               ),
             ),
           ),
@@ -552,14 +647,18 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
             icon: Icon(Icons.delete),
             label: Text(
               'Delete',
-              style: GoogleFonts.poppins(),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red[400],
               foregroundColor: Colors.white,
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(16),
               ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
             onPressed: () async {
               Navigator.of(ctx).pop();
@@ -570,21 +669,32 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                 barrierDismissible: false,
                 builder: (context) => Center(
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(_primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
                         ),
                         SizedBox(height: 16),
                         Text(
                           'Deleting user...',
-                          style: GoogleFonts.poppins(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
                         ),
                       ],
                     ),
@@ -604,9 +714,9 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                     backgroundColor: Colors.green,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(16),
                   ),
                 );
                 _refreshUsers();
@@ -617,9 +727,9 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                     backgroundColor: Colors.red,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(16),
                   ),
                 );
               }
