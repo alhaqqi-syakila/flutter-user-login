@@ -5,41 +5,63 @@ import '../models/user.dart';
 import '../services/api_service.dart';
 import '../services/auth_provider.dart';
 import 'user_form_screen.dart';
+import 'user_details_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UserListScreen extends StatefulWidget {
   @override
   _UserListScreenState createState() => _UserListScreenState();
 }
 
-class _UserListScreenState extends State<UserListScreen> with SingleTickerProviderStateMixin {
+class _UserListScreenState extends State<UserListScreen>
+    with SingleTickerProviderStateMixin {
   late Future<List<User>> _usersFuture;
   final ApiService _apiService = ApiService();
-  late AnimationController _fabAnimationController;
+  late AnimationController _animationController;
+  late Animation<double> _fadeInAnimation;
+  late Animation<Offset> _slideAnimation;
   late Animation<double> _fabAnimation;
-  
+
   @override
   void initState() {
     super.initState();
     _loadUsers();
-    
-    _fabAnimationController = AnimationController(
+
+    _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 800),
     );
-    
-    _fabAnimation = Tween<double>(begin: 0, end: 1).animate(
+
+    _fadeInAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
-        parent: _fabAnimationController,
-        curve: Curves.easeOut,
+        parent: _animationController,
+        curve: Interval(0.2, 1.0, curve: Curves.easeOut),
       ),
     );
-    
-    _fabAnimationController.forward();
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _fabAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.6, 1.0, curve: Curves.elasticOut),
+      ),
+    );
+
+    _animationController.forward();
   }
-  
+
   @override
   void dispose() {
-    _fabAnimationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -57,34 +79,49 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header section with app icon and title
             Container(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Users Management',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
+                      Text(
+                        'Havech',
+                        style: GoogleFonts.raleway(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
+                      Text(
+                        'User List',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      // IconButton(
+                      //   icon: Icon(Icons.home, color: Colors.black87),
+                      //   tooltip: 'Home',
+                      //   onPressed: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      // ),
                       IconButton(
                         icon: Icon(Icons.logout, color: Colors.black87),
                         tooltip: 'Logout',
@@ -93,43 +130,47 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (context) => Center(
-                              child: Container(
-                                padding: EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
+                            builder:
+                                (context) => Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.black87,
+                                              ),
+                                        ),
+                                        SizedBox(height: 16),
+                                        Text(
+                                          'Logging out...',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
-                                    ),
-                                    SizedBox(height: 16),
-                                    Text(
-                                      'Logging out...',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
                           );
-                          
+
                           // Simulate a short delay for visual feedback
                           await Future.delayed(Duration(milliseconds: 800));
-                          
+
                           Navigator.pop(context); // Close the dialog
                           authProvider.logout();
                           Navigator.pushReplacementNamed(context, '/login');
@@ -140,8 +181,94 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            
+
+            // Users count card
+            FadeTransition(
+              opacity: _fadeInAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                  child: FutureBuilder<List<User>>(
+                    future: _usersFuture,
+                    builder: (context, snapshot) {
+                      int userCount = 0;
+                      if (snapshot.hasData) {
+                        userCount = snapshot.data!.length;
+                      }
+
+                      return Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.black87, Color(0xFF333333)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total Users',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    Icons.people,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              snapshot.hasData ? '$userCount' : '...',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 36,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Registered accounts',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+
             // Main content section
             Expanded(
               child: RefreshIndicator(
@@ -153,7 +280,9 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.black87,
+                          ),
                         ),
                       );
                     } else if (snapshot.hasError) {
@@ -163,7 +292,7 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                           margin: EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
@@ -207,7 +336,7 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                                   foregroundColor: Colors.white,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   padding: EdgeInsets.symmetric(
                                     vertical: 16,
@@ -221,191 +350,356 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
                         ),
                       );
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          margin: EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
+                      return FadeTransition(
+                        opacity: _fadeInAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.all(24),
+                              margin: EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.person_off,
-                                color: Colors.grey[400],
-                                size: 80,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.person_off,
+                                    color: Colors.grey[400],
+                                    size: 80,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'No users found',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Add a new user with the button below',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    icon: Icon(Icons.person_add),
+                                    label: Text('Add First User'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black87,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 16,
+                                        horizontal: 24,
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder:
+                                              (
+                                                context,
+                                                animation,
+                                                secondaryAnimation,
+                                              ) => UserFormScreen(),
+                                          transitionsBuilder: (
+                                            context,
+                                            animation,
+                                            secondaryAnimation,
+                                            child,
+                                          ) {
+                                            const begin = Offset(0.0, 1.0);
+                                            const end = Offset.zero;
+                                            const curve = Curves.easeOutCubic;
+                                            var tween = Tween(
+                                              begin: begin,
+                                              end: end,
+                                            ).chain(CurveTween(curve: curve));
+                                            var offsetAnimation = animation
+                                                .drive(tween);
+                                            return SlideTransition(
+                                              position: offsetAnimation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                      if (result == true) {
+                                        _refreshUsers();
+                                      }
+                                    },
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 16),
-                              Text(
-                                'No users found',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Add a new user with the button below',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       );
                     } else {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: AnimationLimiter(
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              final user = snapshot.data![index];
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: Duration(milliseconds: 375),
-                                child: SlideAnimation(
-                                  verticalOffset: 50.0,
-                                  child: FadeInAnimation(
-                                    child: Container(
-                                      margin: EdgeInsets.only(bottom: 16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.08),
-                                            blurRadius: 15,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(24),
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(24),
-                                          onTap: () {
-                                            _showUserOptions(user);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundColor: const Color.fromARGB(250, 0, 0, 0),
-                                                  radius: 28,
-                                                  child: Text(
-                                                    _getInitials(user),
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 24,
-                                                    ),
-                                                  ),
+                      return FadeTransition(
+                        opacity: _fadeInAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: AnimationLimiter(
+                              child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 8,
+                                ),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  final user = snapshot.data![index];
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: Duration(milliseconds: 375),
+                                    child: SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: Container(
+                                          margin: EdgeInsets.only(bottom: 16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(
+                                                  0.08,
                                                 ),
-                                                SizedBox(width: 16),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        user.username,
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 16,
-                                                          color: Colors.black87,
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                            child: InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder:
+                                                        (
+                                                          context,
+                                                          animation,
+                                                          secondaryAnimation,
+                                                        ) => UserDetailsScreen(
+                                                          user: user,
                                                         ),
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Text(
-                                                        user.email,
-                                                        style: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 14,
+                                                    transitionsBuilder: (
+                                                      context,
+                                                      animation,
+                                                      secondaryAnimation,
+                                                      child,
+                                                    ) {
+                                                      const begin = Offset(
+                                                        1.0,
+                                                        0.0,
+                                                      ); // Start from right
+                                                      const end = Offset.zero;
+                                                      const curve =
+                                                          Curves.easeOutCubic;
+
+                                                      var tween = Tween(
+                                                        begin: begin,
+                                                        end: end,
+                                                      ).chain(
+                                                        CurveTween(
+                                                          curve: curve,
                                                         ),
-                                                      ),
-                                                      if (user.fullName != null && user.fullName!.isNotEmpty)
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(top: 4),
-                                                          child: Text(
-                                                            user.fullName!,
-                                                            style: TextStyle(
-                                                              color: Colors.black54,
-                                                              fontSize: 13,
+                                                      );
+                                                      var offsetAnimation =
+                                                          animation.drive(
+                                                            tween,
+                                                          );
+
+                                                      // Add fade transition alongside slide
+                                                      return FadeTransition(
+                                                        opacity: animation,
+                                                        child: SlideTransition(
+                                                          position:
+                                                              offsetAnimation,
+                                                          child: child,
+                                                        ),
+                                                      );
+                                                    },
+                                                    transitionDuration:
+                                                        Duration(
+                                                          milliseconds: 400,
+                                                        ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  20.0,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    // User avatar with initials
+                                                    Container(
+                                                      width: 56,
+                                                      height: 56,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black87,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              16,
                                                             ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          _getInitials(user),
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 24,
                                                           ),
                                                         ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                // Action buttons with new styling
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey.shade100,
-                                                        borderRadius: BorderRadius.circular(12),
-                                                      ),
-                                                      child: IconButton(
-                                                        icon: Icon(Icons.edit, color: Colors.black87, size: 20),
-                                                        splashRadius: 24,
-                                                        tooltip: 'Edit User',
-                                                        onPressed: () async {
-                                                          final result = await Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) => UserFormScreen(user: user),
-                                                            ),
-                                                          );
-                                                          if (result == true) {
-                                                            _refreshUsers();
-                                                          }
-                                                        },
                                                       ),
                                                     ),
-                                                    SizedBox(width: 8),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey.shade100,
-                                                        borderRadius: BorderRadius.circular(12),
+                                                    SizedBox(width: 16),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            user.username,
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors
+                                                                      .black87,
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            user.email,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors
+                                                                      .black54,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          if (user.fullName !=
+                                                                  null &&
+                                                              user
+                                                                  .fullName!
+                                                                  .isNotEmpty)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets.only(
+                                                                    top: 4,
+                                                                  ),
+                                                              child: Text(
+                                                                user.fullName!,
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .black54,
+                                                                  fontSize: 13,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                        ],
                                                       ),
-                                                      child: IconButton(
-                                                        icon: Icon(Icons.delete, color: Colors.black87, size: 20),
-                                                        splashRadius: 24,
-                                                        tooltip: 'Delete User',
-                                                        onPressed: () {
-                                                          _showDeleteConfirmation(user);
-                                                        },
-                                                      ),
+                                                    ),
+                                                    // Action buttons with consistent styling
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        _buildActionButton(
+                                                          icon: Icons.edit,
+                                                          color: Color(
+                                                            0xFFEEAF00,
+                                                          ),
+                                                          tooltip: 'Edit User',
+                                                          onPressed: () async {
+                                                            final result = await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (
+                                                                      context,
+                                                                    ) => UserFormScreen(
+                                                                      user:
+                                                                          user,
+                                                                    ),
+                                                              ),
+                                                            );
+                                                            if (result ==
+                                                                true) {
+                                                              _refreshUsers();
+                                                            }
+                                                          },
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        _buildActionButton(
+                                                          icon: Icons.delete,
+                                                          color: Color.fromARGB(
+                                                            255,
+                                                            238,
+                                                            0,
+                                                            0,
+                                                          ),
+                                                          tooltip:
+                                                              'Delete User',
+                                                          onPressed: () {
+                                                            _showDeleteConfirmation(
+                                                              user,
+                                                            );
+                                                          },
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            },
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -424,14 +718,27 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
             final result = await Navigator.push(
               context,
               PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => UserFormScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                pageBuilder:
+                    (context, animation, secondaryAnimation) =>
+                        UserFormScreen(),
+                transitionsBuilder: (
+                  context,
+                  animation,
+                  secondaryAnimation,
+                  child,
+                ) {
                   const begin = Offset(0.0, 1.0);
                   const end = Offset.zero;
                   const curve = Curves.easeOutCubic;
-                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var tween = Tween(
+                    begin: begin,
+                    end: end,
+                  ).chain(CurveTween(curve: curve));
                   var offsetAnimation = animation.drive(tween);
-                  return SlideTransition(position: offsetAnimation, child: child);
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
                 },
               ),
             );
@@ -443,12 +750,38 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
           icon: Icon(Icons.person_add, color: Colors.white),
           label: Text(
             'Add User',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
           ),
           elevation: 4,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onPressed,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color),
+          ),
         ),
       ),
     );
@@ -469,124 +802,211 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
   void _showUserOptions(User user) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) => Container(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
+      backgroundColor: Colors.transparent,
+      builder:
+          (ctx) => Container(
+            padding: EdgeInsets.only(top: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey.shade100,
-                  radius: 32,
-                  child: Text(
-                    _getInitials(user),
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                    ),
+                // Sheet handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                // User header
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
                     children: [
-                      Text(
-                        user.username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
                           color: Colors.black87,
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      ),
-                      if (user.fullName != null && user.fullName!.isNotEmpty)
-                        Text(
-                          user.fullName!,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 14,
+                        child: Center(
+                          child: Text(
+                            _getInitials(user),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                            ),
                           ),
                         ),
-                      Text(
-                        user.email,
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 14,
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.username,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            if (user.fullName != null &&
+                                user.fullName!.isNotEmpty)
+                              Text(
+                                user.fullName!,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            Text(
+                              user.email,
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
+                SizedBox(height: 24),
+
+                // Options list
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      _buildOptionTile(
+                        icon: Icons.edit,
+                        title: 'Edit User',
+                        color: Color(0xFFEEAF00),
+                        onTap: () async {
+                          Navigator.pop(ctx);
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserFormScreen(user: user),
+                            ),
+                          );
+                          if (result == true) {
+                            _refreshUsers();
+                          }
+                        },
+                      ),
+                      _buildOptionTile(
+                        icon: Icons.delete,
+                        title: 'Delete User',
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.pop(ctx);
+                          _showDeleteConfirmation(user);
+                        },
+                      ),
+                      _buildOptionTile(
+                        icon: Icons.info_outline,
+                        title: 'User Details',
+                        color: Colors.blue,
+                        onTap: () {
+                          Navigator.pop(ctx);
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      UserDetailsScreen(user: user),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                const begin = Offset(
+                                  1.0,
+                                  0.0,
+                                ); // Start from right
+                                const end = Offset.zero;
+                                const curve = Curves.easeOutCubic;
+
+                                var tween = Tween(
+                                  begin: begin,
+                                  end: end,
+                                ).chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+
+                                // Add fade transition alongside slide
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: offsetAnimation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 400),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 24),
               ],
             ),
-            SizedBox(height: 24),
-            _buildOptionTile(
-              icon: Icons.edit,
-              title: 'Edit User',
-              onTap: () async {
-                Navigator.pop(ctx);
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserFormScreen(user: user),
-                  ),
-                );
-                if (result == true) {
-                  _refreshUsers();
-                }
-              },
-            ),
-            _buildOptionTile(
-              icon: Icons.delete,
-              title: 'Delete User',
-              onTap: () {
-                Navigator.pop(ctx);
-                _showDeleteConfirmation(user);
-              },
-            ),
-            _buildOptionTile(
-              icon: Icons.info_outline,
-              title: 'User Details',
-              onTap: () {
-                Navigator.pop(ctx);
-                // Implement detailed view if needed
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
   Widget _buildOptionTile({
     required IconData icon,
     required String title,
+    required Color color,
     required VoidCallback onTap,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: ListTile(
-        leading: Icon(icon, color: Colors.black87),
+        leading: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color),
+        ),
         title: Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         onTap: onTap,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     );
   }
@@ -594,149 +1014,144 @@ class _UserListScreenState extends State<UserListScreen> with SingleTickerProvid
   void _showDeleteConfirmation(User user) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        title: Text(
-          'Delete User',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.warning_amber_rounded,
-              color: Colors.amber,
-              size: 64,
+      builder:
+          (ctx) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            SizedBox(height: 16),
-            Text(
-              'This action cannot be undone.',
+            title: Text(
+              'Delete User',
               style: TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Are you sure you want to delete ${user.username}?',
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
-          ),
-          ElevatedButton.icon(
-            icon: Icon(Icons.delete),
-            label: Text(
-              'Delete',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[400],
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            ),
-            onPressed: () async {
-              Navigator.of(ctx).pop();
-              
-              // Show loading indicator
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => Center(
-                  child: Container(
-                    padding: EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Deleting user...',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  color: Colors.amber,
+                  size: 64,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'This action cannot be undone.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
                   ),
                 ),
-              );
-              
-              final success = await _apiService.deleteUser(user.id!);
-              
-              // Close loading dialog
-              Navigator.of(context).pop();
-              
-              if (success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('User deleted successfully'),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    margin: EdgeInsets.all(16),
+                SizedBox(height: 8),
+                Text(
+                  'Are you sure you want to delete ${user.username}?',
+                  style: TextStyle(color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: Text('Cancel', style: TextStyle(color: Colors.black54)),
+              ),
+              ElevatedButton.icon(
+                icon: Icon(Icons.delete),
+                label: Text(
+                  'Delete',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[400],
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-                _refreshUsers();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Failed to delete user'),
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    margin: EdgeInsets.all(16),
-                  ),
-                );
-              }
-            },
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                ),
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+
+                  // Show loading indicator
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder:
+                        (context) => Center(
+                          child: Container(
+                            padding: EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  'Deleting user...',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  );
+
+                  final success = await _apiService.deleteUser(user.id!);
+
+                  // Close loading dialog
+                  Navigator.of(context).pop();
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('User deleted successfully'),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: EdgeInsets.all(16),
+                      ),
+                    );
+                    _refreshUsers();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to delete user'),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: EdgeInsets.all(16),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

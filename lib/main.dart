@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/user_list_screen.dart';
+// import 'screens/home_screen.dart';
 import 'services/auth_provider.dart';
 
 void main() {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/users': (context) => UserListScreen(),
+        // '/home': (context) => HomeScreen(),
       },
     );
   }
