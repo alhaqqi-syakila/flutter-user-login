@@ -54,7 +54,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
       });
 
       bool success;
-      
+
       if (_isEditMode) {
         final updatedUser = User(
           id: widget.user!.id,
@@ -79,7 +79,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User ${_isEditMode ? 'updated' : 'created'} successfully')),
+          SnackBar(
+            content: Text(
+              'User ${_isEditMode ? 'updated' : 'created'} successfully',
+            ),
+          ),
         );
         Navigator.pop(context, true);
       } else {
@@ -91,28 +95,34 @@ class _UserFormScreenState extends State<UserFormScreen> {
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(message),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(_isEditMode ? 'Edit User' : 'Add User'),
+        title: Text(
+          _isEditMode ? 'Edit User' : 'Add User',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
@@ -144,7 +154,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _isEditMode 
+                    _isEditMode
                         ? 'Update user information below'
                         : 'Please fill in all required fields',
                     style: theme.textTheme.bodyLarge?.copyWith(
@@ -152,7 +162,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // Form container
                   Container(
                     padding: const EdgeInsets.all(24),
@@ -177,10 +187,12 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter username',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0)
+                                color: const Color.fromARGB(100, 0, 0, 0),
                               ),
-                              prefixIcon: Icon(Icons.person_outline, 
-                                color: const Color.fromARGB(100, 0, 0, 0)),
+                              prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: const Color.fromARGB(100, 0, 0, 0),
+                              ),
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               border: OutlineInputBorder(
@@ -200,7 +212,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Email field
                           TextFormField(
                             controller: _emailController,
@@ -208,10 +220,12 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter email address',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0)
+                                color: const Color.fromARGB(100, 0, 0, 0),
                               ),
-                              prefixIcon: Icon(Icons.email_outlined, 
-                                color: const Color.fromARGB(100, 0, 0, 0)),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: const Color.fromARGB(100, 0, 0, 0),
+                              ),
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               border: OutlineInputBorder(
@@ -234,17 +248,19 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Full name field
                           TextFormField(
                             controller: _fullNameController,
                             decoration: InputDecoration(
                               hintText: 'Enter full name (optional)',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0)
+                                color: const Color.fromARGB(100, 0, 0, 0),
                               ),
-                              prefixIcon: Icon(Icons.badge_outlined, 
-                                color: const Color.fromARGB(100, 0, 0, 0)),
+                              prefixIcon: Icon(
+                                Icons.badge_outlined,
+                                color: const Color.fromARGB(100, 0, 0, 0),
+                              ),
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               border: OutlineInputBorder(
@@ -258,7 +274,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Password fields (only for create mode)
                           if (!_isEditMode) ...[
                             TextFormField(
@@ -267,10 +283,12 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               decoration: InputDecoration(
                                 hintText: 'Create password',
                                 hintStyle: TextStyle(
-                                  color: const Color.fromARGB(100, 0, 0, 0)
+                                  color: const Color.fromARGB(100, 0, 0, 0),
                                 ),
-                                prefixIcon: Icon(Icons.lock_outline, 
-                                  color: const Color.fromARGB(100, 0, 0, 0)),
+                                prefixIcon: Icon(
+                                  Icons.lock_outline,
+                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
@@ -312,10 +330,12 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               decoration: InputDecoration(
                                 hintText: 'Confirm password',
                                 hintStyle: TextStyle(
-                                  color: const Color.fromARGB(100, 0, 0, 0)
+                                  color: const Color.fromARGB(100, 0, 0, 0),
                                 ),
-                                prefixIcon: Icon(Icons.lock_outline, 
-                                  color: const Color.fromARGB(100, 0, 0, 0)),
+                                prefixIcon: Icon(
+                                  Icons.lock_outline,
+                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscureConfirmPassword
@@ -325,7 +345,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword;
                                     });
                                   },
                                 ),
@@ -349,7 +370,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             ),
                           ],
                           const SizedBox(height: 32),
-                          
+
                           // Submit button
                           SizedBox(
                             width: double.infinity,
@@ -364,31 +385,34 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                               ),
-                              child: _isLoading
-                                  ? SizedBox(
-                                      height: 24,
-                                      width: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 3,
+                              child:
+                                  _isLoading
+                                      ? SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 3,
+                                        ),
+                                      )
+                                      : Text(
+                                        _isEditMode
+                                            ? 'Update User'
+                                            : 'Create User',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    )
-                                  : Text(
-                                      _isEditMode ? 'Update User' : 'Create User',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Cancel button
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -397,9 +421,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     ),
                     child: const Text(
                       'Cancel',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
