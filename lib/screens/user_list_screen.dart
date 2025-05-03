@@ -88,7 +88,7 @@ class _UserListScreenState extends State<UserListScreen>
           children: [
             // Header section with app icon and title
             Container(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -96,7 +96,7 @@ class _UserListScreenState extends State<UserListScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Havech',
+                        'Havault',
                         style: GoogleFonts.raleway(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -307,7 +307,7 @@ class _UserListScreenState extends State<UserListScreen>
                             children: [
                               Icon(
                                 Icons.error_outline,
-                                color: Colors.red[300],
+                                color: Colors.black,
                                 size: 60,
                               ),
                               SizedBox(height: 16),
@@ -596,10 +596,10 @@ class _UserListScreenState extends State<UserListScreen>
                                                         children: [
                                                           Text(
                                                             user.username,
-                                                            style: TextStyle(
+                                                            style: GoogleFonts.raleway(
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w600,
+                                                                      .w700,
                                                               fontSize: 16,
                                                               color:
                                                                   Colors
