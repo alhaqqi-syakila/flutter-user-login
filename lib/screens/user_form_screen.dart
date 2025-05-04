@@ -115,17 +115,20 @@ class _UserFormScreenState extends State<UserFormScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final Color inputBgColor = Color(0xFF151515);
+    final Color hintTextColor = const Color.fromARGB(100, 255, 255, 255);
+    final Color iconColor = Colors.white;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF151515),
       appBar: AppBar(
         title: Text(
           _isEditMode ? 'Edit User' : 'Add User',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        backgroundColor: Color(0xFF151515),
+        foregroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Center(
@@ -141,7 +144,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     child: Icon(
                       _isEditMode ? Icons.edit_note : Icons.gesture,
                       size: 80,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -149,7 +152,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     _isEditMode ? 'Update User' : 'Create New User',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -158,7 +161,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         ? 'Update user information below'
                         : 'Please fill in all required fields',
                     style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Colors.black54,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -167,11 +170,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color(0xFF1D1D1D),
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Color(0xFF1D1D1D).withOpacity(0.1),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -187,14 +190,15 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter username',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: hintTextColor,
+                                fontWeight: FontWeight.w400,
                               ),
                               prefixIcon: Icon(
                                 Icons.person_outline,
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: iconColor,
                               ),
                               filled: true,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: inputBgColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
                                 borderSide: BorderSide.none,
@@ -203,6 +207,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 vertical: 16,
                                 horizontal: 20,
                               ),
+                            ),
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -220,14 +227,14 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter email address',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: hintTextColor,
                               ),
                               prefixIcon: Icon(
                                 Icons.email_outlined,
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: iconColor,
                               ),
                               filled: true,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: inputBgColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
                                 borderSide: BorderSide.none,
@@ -236,6 +243,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 vertical: 16,
                                 horizontal: 20,
                               ),
+                            ),
+                            style: TextStyle(
+                              color: _isEditMode ? Colors.white : Colors.white,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -255,14 +265,14 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter full name (optional)',
                               hintStyle: TextStyle(
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: hintTextColor,
                               ),
                               prefixIcon: Icon(
                                 Icons.badge_outlined,
-                                color: const Color.fromARGB(100, 0, 0, 0),
+                                color: iconColor,
                               ),
                               filled: true,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: inputBgColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
                                 borderSide: BorderSide.none,
@@ -272,29 +282,32 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 horizontal: 20,
                               ),
                             ),
+                            style: TextStyle(
+                              color: _isEditMode ? Colors.black87 : Colors.white,
+                            ),
                           ),
                           const SizedBox(height: 16),
 
                           // Password fields (only for create mode)
-                          if (!_isEditMode) ...[
+                                                      if (!_isEditMode) ... [
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               decoration: InputDecoration(
                                 hintText: 'Create password',
                                 hintStyle: TextStyle(
-                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                  color: hintTextColor,
                                 ),
                                 prefixIcon: Icon(
                                   Icons.lock_outline,
-                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                  color: iconColor,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
-                                    color: const Color.fromARGB(100, 0, 0, 0),
+                                    color: iconColor,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -303,7 +316,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   },
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.shade100,
+                                fillColor: inputBgColor,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: BorderSide.none,
@@ -312,6 +325,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   vertical: 16,
                                   horizontal: 20,
                                 ),
+                              ),
+                              style: TextStyle(
+                                color: Colors.white,
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -330,18 +346,18 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               decoration: InputDecoration(
                                 hintText: 'Confirm password',
                                 hintStyle: TextStyle(
-                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                  color: hintTextColor,
                                 ),
                                 prefixIcon: Icon(
                                   Icons.lock_outline,
-                                  color: const Color.fromARGB(100, 0, 0, 0),
+                                  color: iconColor,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscureConfirmPassword
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
-                                    color: const Color.fromARGB(100, 0, 0, 0),
+                                    color: iconColor,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -351,7 +367,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   },
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.shade100,
+                                fillColor: inputBgColor,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: BorderSide.none,
@@ -360,6 +376,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                   vertical: 16,
                                   horizontal: 20,
                                 ),
+                              ),
+                              style: TextStyle(
+                                color: Colors.white,
                               ),
                               validator: (value) {
                                 if (value != _passwordController.text) {
@@ -378,7 +397,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             child: ElevatedButton(
                               onPressed: _isLoading ? null : _saveUser,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black87,
+                                backgroundColor: Color(0xFF0077EE),
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
@@ -417,7 +436,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.black87,
+                      foregroundColor: Colors.white,
                     ),
                     child: const Text(
                       'Cancel',

@@ -10,14 +10,14 @@ class UserDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF151515),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        backgroundColor: Color(0xFF151515),
+        foregroundColor: Colors.white,
         title: Text(
           'User Details',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 20),
@@ -40,7 +40,7 @@ class UserDetailsScreen extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Colors.black87,
+                        color: Color(0xFF0077EE),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
@@ -60,7 +60,7 @@ class UserDetailsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Colors.white,
                       ),
                     ),
                     if (user.fullName != null && user.fullName!.isNotEmpty)
@@ -68,20 +68,16 @@ class UserDetailsScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
                           user.fullName!,
-                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ),
-                    SizedBox(height: 8),
                     Text(
                       user.email,
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                      style: TextStyle(fontSize: 16, color: Color(0x63FFFFFF)),
                     ),
                   ],
                 ),
               ),
-
-              // Divider
-              Divider(color: Colors.grey.shade200, thickness: 1),
 
               // User information section
               Padding(
@@ -131,8 +127,8 @@ class UserDetailsScreen extends StatelessWidget {
       title,
       style: TextStyle(
         fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.black87,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
       ),
     );
   }
@@ -146,19 +142,18 @@ class UserDetailsScreen extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: Color(0xFF1D1D1D),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.black87.withOpacity(0.1),
+              color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: Colors.black87, size: 20),
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
           SizedBox(width: 16),
           Expanded(
@@ -167,7 +162,7 @@ class UserDetailsScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                  style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7)),
                 ),
                 SizedBox(height: 4),
                 Text(
@@ -175,7 +170,7 @@ class UserDetailsScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: Colors.white,
                   ),
                 ),
               ],
