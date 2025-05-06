@@ -15,6 +15,16 @@ class UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<UserListScreen>
     with SingleTickerProviderStateMixin {
+
+  final Color primaryColor = Color(0xFF5600D8);
+  final Color backgroundColor = Color(0xFF151515);
+  final Color cardBackgroundColor = Color(0xFF1D1D1D);
+  final Color cardBackgroundColor2 = Color(0xFF212121);
+  final Color textColorPrimary = Colors.white;
+  final Color textColorSecondary = Colors.white70;
+  final Color editColor = Color(0xFFEEAF00);
+  final Color deleteColor = Color(0xFFEE0000);
+  
   late Future<List<User>> _usersFuture;
   final ApiService _apiService = ApiService();
   late AnimationController _animationController;
@@ -81,7 +91,7 @@ class _UserListScreenState extends State<UserListScreen>
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF151515),
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +110,7 @@ class _UserListScreenState extends State<UserListScreen>
                         style: GoogleFonts.raleway(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColorPrimary,
                         ),
                       ),
                       Text(
@@ -108,7 +118,7 @@ class _UserListScreenState extends State<UserListScreen>
                         style: GoogleFonts.montserrat(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white,
+                          color: textColorPrimary,
                         ),
                       ),
                     ],
@@ -123,7 +133,7 @@ class _UserListScreenState extends State<UserListScreen>
                       //   },
                       // ),
                       IconButton(
-                        icon: Icon(Icons.logout, color: Colors.white),
+                        icon: Icon(Icons.logout, color: textColorPrimary),
                         tooltip: 'Logout',
                         onPressed: () async {
                           // Add a nice animation before logout
@@ -133,9 +143,9 @@ class _UserListScreenState extends State<UserListScreen>
                             builder:
                                 (context) => Center(
                                   child: Container(
-                                    padding: EdgeInsets.all(14),
+                                    padding: EdgeInsets.all(30),
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF1D1D1D),
+                                      color: cardBackgroundColor,
                                       borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
@@ -148,20 +158,18 @@ class _UserListScreenState extends State<UserListScreen>
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                Color(0xFF0077EE),
-                                              ),
-                                        ),
-                                        SizedBox(height: 16),
-                                        Text(
-                                          'Logging out...',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white
+                                        // Using Theme to override the progress indicator colors
+                                        Theme(
+                                          data: ThemeData(
+                                            progressIndicatorTheme:
+                                                ProgressIndicatorThemeData(
+                                                  color: primaryColor,
+                                                  // This removes the background track color
+                                                  circularTrackColor:
+                                                      Colors.transparent,
+                                                ),
                                           ),
+                                          child: CircularProgressIndicator(),
                                         ),
                                       ],
                                     ),
@@ -203,14 +211,19 @@ class _UserListScreenState extends State<UserListScreen>
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Color(0xFF1D1D1D), Color(0xFF212121)],
+                            colors: [cardBackgroundColor, cardBackgroundColor2],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color.fromARGB(1, 49, 49, 49).withOpacity(0.1),
+                              color: const Color.fromARGB(
+                                1,
+                                49,
+                                49,
+                                49,
+                              ).withOpacity(0.1),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -225,7 +238,7 @@ class _UserListScreenState extends State<UserListScreen>
                                 Text(
                                   'Total Users',
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: textColorPrimary.withOpacity(0.8),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -233,12 +246,12 @@ class _UserListScreenState extends State<UserListScreen>
                                 Container(
                                   padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: Color(0xFF0077EE),
+                                    color: primaryColor,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     Icons.people,
-                                    color: Colors.white,
+                                    color: textColorPrimary,
                                     size: 20,
                                   ),
                                 ),
@@ -248,7 +261,7 @@ class _UserListScreenState extends State<UserListScreen>
                             Text(
                               snapshot.hasData ? '$userCount' : '...',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: textColorPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 36,
                               ),
@@ -257,7 +270,7 @@ class _UserListScreenState extends State<UserListScreen>
                             Text(
                               'Registered accounts',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: textColorPrimary.withOpacity(0.8),
                                 fontSize: 14,
                               ),
                             ),
@@ -292,7 +305,7 @@ class _UserListScreenState extends State<UserListScreen>
                           padding: EdgeInsets.all(24),
                           margin: EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: textColorPrimary,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
@@ -360,7 +373,7 @@ class _UserListScreenState extends State<UserListScreen>
                               padding: EdgeInsets.all(24),
                               margin: EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: textColorPrimary,
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
@@ -402,7 +415,7 @@ class _UserListScreenState extends State<UserListScreen>
                                     label: Text('Add First User'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black87,
-                                      foregroundColor: Colors.white,
+                                      foregroundColor: textColorPrimary,
                                       elevation: 0,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -481,7 +494,7 @@ class _UserListScreenState extends State<UserListScreen>
                                         child: Container(
                                           margin: EdgeInsets.only(bottom: 10),
                                           decoration: BoxDecoration(
-                                            color: Color(0xFF1D1D1D),
+                                            color: cardBackgroundColor,
                                             borderRadius: BorderRadius.circular(
                                               16,
                                             ),
@@ -570,7 +583,7 @@ class _UserListScreenState extends State<UserListScreen>
                                                       width: 56,
                                                       height: 56,
                                                       decoration: BoxDecoration(
-                                                        color: Color(0xFF0077EE),
+                                                        color:primaryColor,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               16,
@@ -580,7 +593,7 @@ class _UserListScreenState extends State<UserListScreen>
                                                         child: Text(
                                                           _getInitials(user),
                                                           style: TextStyle(
-                                                            color: Colors.white,
+                                                            color: textColorPrimary,
                                                             fontWeight:
                                                                 FontWeight.w600,
                                                             fontSize: 24,
@@ -597,23 +610,26 @@ class _UserListScreenState extends State<UserListScreen>
                                                         children: [
                                                           Text(
                                                             user.username,
-                                                            style: GoogleFonts.raleway(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              fontSize: 16,
-                                                              color:
-                                                                  Colors
-                                                                      .white,
-                                                            ),
+                                                            style:
+                                                                GoogleFonts.raleway(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  fontSize: 16,
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                ),
                                                           ),
                                                           SizedBox(height: 4),
                                                           Text(
                                                             user.email,
                                                             style: TextStyle(
-                                                              color:
-                                                                  Colors
-                                                                      .white.withOpacity(0.7),
+                                                              color: Colors
+                                                                  .white
+                                                                  .withOpacity(
+                                                                    0.7,
+                                                                  ),
                                                               fontSize: 14,
                                                             ),
                                                           ),
@@ -647,9 +663,7 @@ class _UserListScreenState extends State<UserListScreen>
                                                       children: [
                                                         _buildActionButton(
                                                           icon: Icons.edit,
-                                                          color: Color(
-                                                            0xFFEEAF00,
-                                                          ),
+                                                          color: editColor,
                                                           tooltip: 'Edit User',
                                                           onPressed: () async {
                                                             final result = await Navigator.push(
@@ -747,11 +761,11 @@ class _UserListScreenState extends State<UserListScreen>
               _refreshUsers();
             }
           },
-          backgroundColor: Color(0xFF0077EE),
-          icon: Icon(Icons.person_add, color: Colors.white),
+          backgroundColor: primaryColor,
+          icon: Icon(Icons.person_add, color: textColorPrimary),
           label: Text(
             'Add User',
-            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+            style: TextStyle(fontWeight: FontWeight.w500, color: textColorPrimary),
           ),
           elevation: 4,
         ),
@@ -808,7 +822,7 @@ class _UserListScreenState extends State<UserListScreen>
           (ctx) => Container(
             padding: EdgeInsets.only(top: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: textColorPrimary,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
@@ -848,7 +862,7 @@ class _UserListScreenState extends State<UserListScreen>
                           child: Text(
                             _getInitials(user),
                             style: TextStyle(
-                              color: Colors.white,
+                              color: textColorPrimary,
                               fontWeight: FontWeight.w600,
                               fontSize: 24,
                             ),
@@ -900,7 +914,7 @@ class _UserListScreenState extends State<UserListScreen>
                       _buildOptionTile(
                         icon: Icons.edit,
                         title: 'Edit User',
-                        color: Color(0xFFEEAF00),
+                        color: editColor,
                         onTap: () async {
                           Navigator.pop(ctx);
                           final result = await Navigator.push(
@@ -926,7 +940,7 @@ class _UserListScreenState extends State<UserListScreen>
                       _buildOptionTile(
                         icon: Icons.info_outline,
                         title: 'User Details',
-                        color: Colors.blue,
+                        color: primaryColor,
                         onTap: () {
                           Navigator.pop(ctx);
                           Navigator.push(
@@ -1066,7 +1080,7 @@ class _UserListScreenState extends State<UserListScreen>
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[400],
-                  foregroundColor: Colors.white,
+                  foregroundColor: textColorPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -1085,7 +1099,7 @@ class _UserListScreenState extends State<UserListScreen>
                           child: Container(
                             padding: EdgeInsets.all(24),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: textColorPrimary,
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
@@ -1127,7 +1141,7 @@ class _UserListScreenState extends State<UserListScreen>
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('User deleted successfully'),
-                        backgroundColor: Colors.green,
+                        backgroundColor: primaryColor,
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

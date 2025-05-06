@@ -11,6 +11,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final Color primaryColor = Color(0xFF5600D8);
+  final Color backgroundColor = Color(0xFF151515);
+  final Color cardBackgroundColor = Color(0xFF1D1D1D);
+  final Color cardBackgroundColor2 = Color(0xFF212121);
+  final Color textColorPrimary = Colors.white;
+  final Color textColorSecondary = Colors.white70;
+  final Color editColor = Color(0xFFEEAF00);
+  final Color deleteColor = Color(0xFFEE0000);
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -83,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final theme = Theme.of(context);
     
     return Scaffold(
-      backgroundColor: Color(0xFF151515),
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -98,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Icon(
                       Icons.sunny_snowing,
                       size: 98,
-                      color: Colors.white,
+                      color: textColorPrimary,
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -106,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Welcome Back',
                     style: theme.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: textColorPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -130,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Color(0xFF1D1D1D),
+                      color: cardBackgroundColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Form(
@@ -140,15 +150,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Username field
                           TextFormField(
                             controller: _usernameController,
-                            style: TextStyle(color: Colors.white), // Set input text color to white
+                            style: TextStyle(color: textColorPrimary), // Set input text color to white
                             decoration: InputDecoration(
                               hintText: 'Enter your username',
                               hintStyle: TextStyle(
                                 color: const Color(0x63FFFFFF)
                               ),
-                              prefixIcon: Icon(Icons.person_outline, color: Colors.white),
+                              prefixIcon: Icon(Icons.person_outline, color: textColorPrimary),
                               filled: true,
-                              fillColor: Color(0xFF151515),
+                              fillColor: backgroundColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide.none,
@@ -171,20 +181,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
-                            style: TextStyle(color: Colors.white), // Set input text color to white
+                            style: TextStyle(color: textColorPrimary), // Set input text color to white
                             decoration: InputDecoration(
                               hintText: 'Enter your password',
                               hintStyle: TextStyle(
                                 color:  const Color(0x63FFFFFF)
                               ),
                               prefixIcon: Icon(Icons.lock_outline,
-                              color: Colors.white),
+                              color: textColorPrimary),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscurePassword
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
-                                  color: Colors.white,
+                                  color: textColorPrimary,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -193,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                               filled: true,
-                              fillColor: Color(0xFF151515),
+                              fillColor: backgroundColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide.none,
@@ -227,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 'Forgot Password?',
                                 style: TextStyle(
-                                  color: Colors.white70,
+                                  color: textColorSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -242,8 +252,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: ElevatedButton(
                               onPressed: _isLoading ? null : _login,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF0077EE),
-                                foregroundColor: Colors.white,
+                                backgroundColor: primaryColor,
+                                foregroundColor: const Color.fromARGB(255, 255, 255, 255),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -254,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       height: 24,
                                       width: 24,
                                       child: CircularProgressIndicator(
-                                        color: Colors.white,
+                                        color: textColorPrimary,
                                         strokeWidth: 3,
                                       ),
                                     )
@@ -281,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         'Don\'t have an account?',
                         style: TextStyle(
-                          color: Colors.white70,
+                          color: textColorSecondary,
                         ),
                       ),
                       TextButton(
@@ -289,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushNamed(context, '/register');
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: Color(0xFF0077EE),
+                          foregroundColor: primaryColor,
                         ),
                         child: const Text(
                           'Sign Up',

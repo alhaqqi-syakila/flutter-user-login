@@ -12,6 +12,16 @@ class UserFormScreen extends StatefulWidget {
 }
 
 class _UserFormScreenState extends State<UserFormScreen> {
+
+  final Color primaryColor = Color(0xFF5600D8);
+  final Color backgroundColor = Color(0xFF151515);
+  final Color cardBackgroundColor = Color(0xFF1D1D1D);
+  final Color cardBackgroundColor2 = Color(0xFF212121);
+  final Color textColorPrimary = Colors.white;
+  final Color textColorSecondary = Colors.white70;
+  final Color editColor = Color(0xFFEEAF00);
+  final Color deleteColor = Color(0xFFEE0000);
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -115,20 +125,20 @@ class _UserFormScreenState extends State<UserFormScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final Color inputBgColor = Color(0xFF151515);
+    final Color inputBgColor = backgroundColor;
     final Color hintTextColor = const Color.fromARGB(100, 255, 255, 255);
-    final Color iconColor = Colors.white;
+    final Color iconColor = textColorPrimary;
 
     return Scaffold(
-      backgroundColor: Color(0xFF151515),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
           _isEditMode ? 'Edit User' : 'Add User',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         elevation: 0,
-        backgroundColor: Color(0xFF151515),
-        foregroundColor: Colors.white,
+        backgroundColor: backgroundColor,
+        foregroundColor: textColorPrimary,
       ),
       body: SafeArea(
         child: Center(
@@ -144,7 +154,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     child: Icon(
                       _isEditMode ? Icons.edit_note : Icons.gesture,
                       size: 80,
-                      color: Colors.white,
+                      color: textColorPrimary,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -152,7 +162,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                     _isEditMode ? 'Update User' : 'Create New User',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: textColorPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -161,7 +171,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         ? 'Update user information below'
                         : 'Please fill in all required fields',
                     style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
+                      color: textColorPrimary,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -170,11 +180,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Color(0xFF1D1D1D),
+                      color: cardBackgroundColor,
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF1D1D1D).withOpacity(0.1),
+                          color: cardBackgroundColor.withOpacity(0.1),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -209,7 +219,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               ),
                             ),
                             style: TextStyle(
-                              color: Colors.white,
+                              color: textColorPrimary,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -245,7 +255,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               ),
                             ),
                             style: TextStyle(
-                              color: _isEditMode ? Colors.white : Colors.white,
+                              color: _isEditMode ? textColorPrimary : textColorPrimary,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -283,7 +293,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               ),
                             ),
                             style: TextStyle(
-                              color: _isEditMode ? Colors.black87 : Colors.white,
+                              color: _isEditMode ? Colors.black87 : textColorPrimary,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -327,7 +337,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 ),
                               ),
                               style: TextStyle(
-                                color: Colors.white,
+                                color: textColorPrimary,
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -378,7 +388,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 ),
                               ),
                               style: TextStyle(
-                                color: Colors.white,
+                                color: textColorPrimary,
                               ),
                               validator: (value) {
                                 if (value != _passwordController.text) {
@@ -397,8 +407,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                             child: ElevatedButton(
                               onPressed: _isLoading ? null : _saveUser,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF0077EE),
-                                foregroundColor: Colors.white,
+                                backgroundColor: primaryColor,
+                                foregroundColor: textColorPrimary,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6),
@@ -410,7 +420,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                         height: 24,
                                         width: 24,
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: textColorPrimary,
                                           strokeWidth: 3,
                                         ),
                                       )
@@ -436,7 +446,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
+                      foregroundColor: textColorPrimary,
                     ),
                     child: const Text(
                       'Cancel',

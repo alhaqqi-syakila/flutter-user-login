@@ -3,21 +3,30 @@ import '../models/user.dart';
 import 'user_form_screen.dart';
 
 class UserDetailsScreen extends StatelessWidget {
+    
+  final Color primaryColor = Color(0xFF5600D8);
+  final Color backgroundColor = Color(0xFF151515);
+  final Color cardBackgroundColor = Color(0xFF1D1D1D);
+  final Color cardBackgroundColor2 = Color(0xFF212121);
+  final Color textColorPrimary = Colors.white;
+  final Color textColorSecondary = Colors.white70;
+  final Color editColor = Color(0xFFEEAF00);
+  final Color deleteColor = Color(0xFFEE0000);
   final User user;
 
-  const UserDetailsScreen({Key? key, required this.user}) : super(key: key);
+  UserDetailsScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF151515),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Color(0xFF151515),
-        foregroundColor: Colors.white,
+        backgroundColor: backgroundColor,
+        foregroundColor: textColorPrimary,
         title: Text(
           'User Details',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: textColorPrimary),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 20),
@@ -40,14 +49,14 @@ class UserDetailsScreen extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Color(0xFF0077EE),
+                        color: primaryColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
                         child: Text(
                           _getInitials(user),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: textColorPrimary,
                             fontWeight: FontWeight.w600,
                             fontSize: 40,
                           ),
@@ -60,7 +69,7 @@ class UserDetailsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: textColorPrimary,
                       ),
                     ),
                     if (user.fullName != null && user.fullName!.isNotEmpty)
@@ -68,7 +77,7 @@ class UserDetailsScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
                           user.fullName!,
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(fontSize: 16, color: textColorPrimary),
                         ),
                       ),
                     Text(
@@ -128,7 +137,7 @@ class UserDetailsScreen extends StatelessWidget {
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: textColorPrimary,
       ),
     );
   }
@@ -142,7 +151,7 @@ class UserDetailsScreen extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFF1D1D1D),
+        color: cardBackgroundColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -150,10 +159,10 @@ class UserDetailsScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: textColorPrimary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: Colors.white, size: 20),
+            child: Icon(icon, color: textColorPrimary, size: 20),
           ),
           SizedBox(width: 16),
           Expanded(
@@ -162,7 +171,7 @@ class UserDetailsScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7)),
+                  style: TextStyle(fontSize: 14, color: textColorPrimary.withOpacity(0.7)),
                 ),
                 SizedBox(height: 4),
                 Text(
@@ -170,7 +179,7 @@ class UserDetailsScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: textColorPrimary,
                   ),
                 ),
               ],
@@ -193,7 +202,7 @@ class UserDetailsScreen extends StatelessWidget {
       label: Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
-        foregroundColor: Colors.white,
+        foregroundColor: textColorPrimary,
         elevation: 0,
         padding: EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
